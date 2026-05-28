@@ -1,0 +1,27 @@
+{
+    "name": "contabilidade/padc",
+    "description": "Conversor dos *.txt do PAD para DuckDB.",
+    "type": "tool",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Padc\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "everton3x",
+            "email": "everton3x@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=8.5",
+        "satur.io/duckdb-auto": "dev-main"
+    },
+    "config": {
+        "allow-plugins": {
+            "satur.io/duckdb-auto": true
+        }
+    }
+}

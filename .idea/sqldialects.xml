@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/sql/20-bal_desp.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/22-liquidac.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/23-pagament.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/30-bal_rec.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/31-receita.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/40-bal_ver.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/41-tce_4111.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/42-bver_enc.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/50-rd_extra.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/51-decreto.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/60-orgao.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/61-uniorcam.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/62-programa.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/63-projativ.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/64-rubrica.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/65-recurso.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/66-credor.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/70-cta_disp.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/90-moviemp.sql" dialect="GenericSQL" />
+  </component>
+</project>
