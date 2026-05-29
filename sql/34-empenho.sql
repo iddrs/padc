@@ -1,5 +1,5 @@
 create table if not exists
-moviemp
+empenho
 (
     remessa uinteger,
     entidade varchar(4),
@@ -21,6 +21,8 @@ moviemp
     ano_empenho usmallint,
     entidade_empenho utinyint,
     nr_empenho usmallint,
+    data date,
+    valor decimal(11, 2),
     credor uinteger,
     nome_credor varchar(60),
     caracteristica_peculiar usmallint,
@@ -44,21 +46,12 @@ moviemp
     codigo_orcamentario usmallint,
     nome_codigo_orcamentario varchar(80),
     emenda_parlamentar usmallint,
-    nome_emenda_parlamentar varchar(80),
-    empenhado_bruto decimal(11, 2),
-    estorno_empenho decimal(11, 2),
-    empenhado decimal(11, 2),
-    liquidado_bruto decimal(11, 2),
-    estorno_liquidacao decimal(11, 2),
-    liquidado decimal(11, 2),
-    pago_bruto decimal(11, 2),
-    estorno_pagamento decimal(11, 2),
-    pago decimal(11, 2)
+    nome_emenda_parlamentar varchar(80)
 );
 
-delete from moviemp where remessa = {{remessa}};
+delete from empenho where remessa = {{remessa}};
 
-insert into moviemp
+insert into empenho
 (
     remessa,
     entidade,
@@ -73,6 +66,8 @@ insert into moviemp
     ano_empenho,
     entidade_empenho,
     nr_empenho,
+    data,
+    valor,
     credor,
     caracteristica_peculiar,
     registro_precos,
@@ -87,72 +82,64 @@ insert into moviemp
     exercicio_recurso,
     fonte_recurso,
     codigo_orcamentario,
-    emenda_parlamentar,
-    empenhado_bruto,
-    estorno_empenho,
-    empenhado,
-    liquidado_bruto,
-    estorno_liquidacao,
-    liquidado,
-    pago_bruto,
-    estorno_pagamento,
-    pago
+    emenda_parlamentar
 )
-select distinct
+select
     remessa,
     entidade,
-    orgao,
-    uniorcam,
-    funcao,
-    subfuncao,
-    programa,
-    projativ,
-    rubrica,
-    chave_empenho,
-    ano_empenho,
-    entidade_empenho,
-    nr_empenho,
-    credor,
-    caracteristica_peculiar,
-    registro_precos,
-    nr_licitacao,
-    ano_licitacao,
-    historico,
-    forma_contratacao,
-    base_legal,
-    despesa_funcionario,
-    licitacao_compartilhada,
-    cnpj_gerenciador,
-    exercicio_recurso,
-    fonte_recurso,
-    codigo_orcamentario,
-    emenda_parlamentar,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
-from empenho
-where remessa = {{remessa}};
+    substring(raw_data, 1, 2),
+    substring(raw_data, 1, 4),
+    substring(raw_data, 5, 2),
+    substring(raw_data, 7, 3),
+    substring(raw_data, 10, 4),
+    substring(raw_data, 17, 5),
+    substring(raw_data, 22, 1) || '.' ||
+    substring(raw_data, 23, 1) || '.' ||
+    substring(raw_data, 24, 2) || '.' ||
+    substring(raw_data, 26, 2) || '.' ||
+    substring(raw_data, 28, 2) || '.' ||
+    substring(raw_data, 30, 2) || '.' ||
+    substring(raw_data, 32, 2) || '.' ||
+    substring(raw_data, 34, 2),
+    substring(raw_data, 45, 13),
+    substring(raw_data, 45, 5),
+    substring(raw_data, 50,2),
+    substring(raw_data, 52, 5),
+    make_date(cast(substring(raw_data, 62, 4) as usmallint), cast(substring(raw_data, 60, 2) as utinyint), cast(substring(raw_data, 58, 2) as utinyint)),
+    round(cast(substring(raw_data, 79, 1) || ltrim(substring(raw_data, 66, 13), '0') as hugeint) / 100, 2),
+    substring(raw_data, 80, 10),
+    substring(raw_data, 255, 3),
+    upper(substring(raw_data, 260, 1)),
+    substring(raw_data, 281, 20),
+    substring(raw_data, 301, 4),
+    trim(substring(raw_data, 305, 400)),
+    upper(substring(raw_data, 705, 3)),
+    substring(raw_data, 708, 2),
+    upper(substring(raw_data, 710, 1)),
+    upper(substring(raw_data, 711, 1)),
+    substring(raw_data, 712, 2) || '.' ||
+    substring(raw_data, 714, 3) || '.' ||
+    substring(raw_data, 717, 3) || '/' ||
+    substring(raw_data, 720, 4) || '-' ||
+    substring(raw_data, 724, 2),
+    substring(raw_data, 730, 1),
+    substring(raw_data, 731, 3),
+    substring(raw_data, 734, 4),
+    substring(raw_data, 738, 4)
+from cache
+where arquivo like 'empenho';
 
-update moviemp m
-set
-    empenhado_bruto = (select sum(valor) from empenho where remessa = m.remessa and chave_empenho = m.chave_empenho and valor > 0),
-    estorno_empenho = (select sum(valor) from empenho where remessa = m.remessa and chave_empenho = m.chave_empenho and valor < 0),
-    empenhado = (select sum(valor) from empenho where remessa = m.remessa and chave_empenho = m.chave_empenho),
-    liquidado_bruto = (select sum(valor) from liquidacao where remessa = m.remessa and chave_empenho = m.chave_empenho and valor > 0),
-    estorno_liquidacao = (select sum(valor) from liquidacao where remessa = m.remessa and chave_empenho = m.chave_empenho and valor < 0),
-    liquidado = (select sum(valor) from liquidacao where remessa = m.remessa and chave_empenho = m.chave_empenho),
-    pago_bruto = (select sum(valor) from pagamento where remessa = m.remessa and chave_empenho = m.chave_empenho and valor > 0),
-    estorno_pagamento = (select sum(valor) from pagamento where remessa = m.remessa and chave_empenho = m.chave_empenho and valor < 0),
-    pago = (select sum(valor) from pagamento where remessa = m.remessa and chave_empenho = m.chave_empenho)
-where remessa = {{remessa}};
+update empenho
+set entidade = case orgao
+                   when 1 then 'cm'
+                   when 12 then 'fpsm'
+                   when 50 then 'fpsm'
+                   else 'pm'
+    end
+where remessa = {{remessa}}
+  and entidade is null or entidade like '';
 
-update moviemp t
+update empenho t
 set
     nome_orgao = (select nome from orgao where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and orgao = t.orgao limit 1),
     nome_uniorcam = (select nome from uniorcam where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and uniorcam = t.uniorcam limit 1),

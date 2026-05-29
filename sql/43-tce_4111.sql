@@ -4,8 +4,11 @@ diario
     remessa uinteger,
     entidade varchar(4),
     conta_contabil varchar(24),
+    especificacao varchar(148),
     orgao usmallint,
+    nome_orgao varchar(80),
     uniorcam usmallint,
+    nome_uniorcam varchar(80),
     nr_lancamento uhugeint,
     nr_lote uhugeint,
     nr_documento uhugeint,
@@ -16,11 +19,17 @@ diario
     historico varchar(150),
     tipo_documento utinyint,
     natureza_informacao char,
+    nome_natureza_informacao varchar(30),
     indicador_superavit char,
+    nome_indicador_superavit varchar(30),
     exercicio_recurso utinyint,
+    nome_exercicio_recurso varchar(30),
     fonte_recurso usmallint,
+    nome_fonte_recurso varchar(80),
     codigo_orcamentario usmallint,
-    emenda_parlamentar usmallint
+    nome_codigo_orcamentario varchar(80),
+    emenda_parlamentar usmallint,
+    nome_emenda_parlamentar varchar(80)
 );
 
 delete from diario where remessa = {{remessa}};
@@ -90,3 +99,16 @@ set entidade = case orgao
     end
 where remessa = {{remessa}}
   and entidade is null or entidade like '';
+
+update diario t
+set
+    especificacao = (select especificacao from pcasp where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and conta_contabil like t.conta_contabil limit 1),
+    nome_orgao = (select nome from orgao where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and orgao = t.orgao limit 1),
+    nome_uniorcam = (select nome from uniorcam where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and uniorcam = t.uniorcam limit 1),
+    nome_exercicio_recurso = (select nome from exercicio_recurso where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and exercicio_recurso = t.exercicio_recurso limit 1),
+    nome_fonte_recurso = (select nome from fonte_recurso where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and fonte_recurso = t.fonte_recurso limit 1),
+    nome_codigo_orcamentario = (select nome from codigo_orcamentario where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and codigo_orcamentario = t.codigo_orcamentario limit 1),
+    nome_emenda_parlamentar = (select nome from emenda_parlamentar where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and emenda_parlamentar = t.emenda_parlamentar limit 1),
+    nome_natureza_informacao = case natureza_informacao when 'P' then 'Patrimonial' when 'O' then 'Orçamentária' when 'C' then 'Controle' else null end,
+    nome_indicador_superavit = case indicador_superavit when 'F' then 'Financeiro' when 'P' then 'Permanente' else null end
+where nome_orgao is null or nome_orgao like '';

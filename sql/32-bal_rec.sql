@@ -4,20 +4,29 @@ balrec
     remessa uinteger,
     entidade varchar(4),
     orgao usmallint,
+    nome_orgao varchar(80),
     uniorcam usmallint,
+    nome_uniorcam varchar(80),
     codigo_receita varchar(23),
     natureza_receita varchar(23),
-    receita_orcada decimal(11, 2),
-    receita_realizada decimal(11, 2),
     especificacao varchar(170),
     tipo_nivel char,
     nivel usmallint,
     deducao utinyint,
-    previsao_atualizada decimal(11, 2),
+    nome_deducao varchar(30),
     exercicio_recurso utinyint,
+    nome_exercicio_recurso varchar(30),
     fonte_recurso usmallint,
+    nome_fonte_recurso varchar(80),
     codigo_orcamentario usmallint,
-    emenda_parlamentar usmallint
+    nome_codigo_orcamentario varchar(255),
+    emenda_parlamentar usmallint,
+    nome_emenda_parlamentar varchar(80),
+    receita_orcada decimal(11, 2),
+    previsao_atualizada decimal(11, 2),
+    receita_realizada decimal(11, 2),
+    dif_realizada_orcada decimal(11, 2),
+    dif_realizada_atualizada decimal(11, 2)
 );
 
 delete from balrec where remessa = {{remessa}};
@@ -88,8 +97,6 @@ set natureza_receita = case
     end
 where natureza_receita is null;
 
-
-
 create table if not exists
 ementario_receita
 (
@@ -136,3 +143,20 @@ where remessa = {{remessa}}
 order by codigo_receita asc;
 
 delete from balrec where tipo_nivel like 'S';
+
+update balrec
+set
+    dif_realizada_orcada = receita_realizada - receita_orcada,
+    dif_realizada_atualizada = receita_realizada - previsao_atualizada
+where remessa = {{remessa}};
+
+update balrec t
+set
+    nome_orgao = (select nome from orgao where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and orgao = t.orgao limit 1),
+    nome_uniorcam = (select nome from uniorcam where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and uniorcam = t.uniorcam limit 1),
+    nome_exercicio_recurso = (select nome from exercicio_recurso where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and exercicio_recurso = t.exercicio_recurso limit 1),
+    nome_fonte_recurso = (select nome from fonte_recurso where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and fonte_recurso = t.fonte_recurso limit 1),
+    nome_codigo_orcamentario = (select nome from codigo_orcamentario where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and codigo_orcamentario = t.codigo_orcamentario limit 1),
+    nome_deducao = (select nome from deducao where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and deducao = t.deducao limit 1),
+    nome_emenda_parlamentar = (select nome from emenda_parlamentar where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and emenda_parlamentar = t.emenda_parlamentar limit 1)
+where nome_orgao is null or nome_orgao like '';

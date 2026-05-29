@@ -19,9 +19,9 @@ select
 from cache
 where arquivo like 'orgao';
 
-CREATE TABLE decreto_temp AS
-SELECT DISTINCT * FROM decreto;
+CREATE TABLE orgao_temp AS
+SELECT DISTINCT * FROM orgao;
 
-DROP TABLE decreto;
+DROP TABLE orgao;
 
-ALTER TABLE decreto_temp RENAME TO decreto;
+ALTER TABLE orgao_temp RENAME TO orgao;

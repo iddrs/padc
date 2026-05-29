@@ -4,17 +4,26 @@ ctadisp
     exercicio usmallint,
     entidade varchar(4),
     conta_contabil varchar(24),
+    especificacao varchar(148),
     orgao usmallint,
+    nome_orgao varchar(80),
     uniorcam usmallint,
+    nome_uniorcam varchar(80),
     banco uinteger,
     agencia varchar(5),
     conta_corrente varchar(20),
     tipo_conta utinyint,
+    nome_tipo_conta varchar(30),
     classificacao utinyint,
+    nome_classificacao varchar(30),
     exercicio_recurso utinyint,
+    nome_exercicio_recurso varchar(30),
     fonte_recurso usmallint,
+    nome_fonte_recurso varchar(80),
     codigo_orcamentario usmallint,
-    emenda_parlamentar usmallint
+    nome_codigo_orcamentario varchar(80),
+    emenda_parlamentar usmallint,
+    nome_emenda_parlamentar varchar(80),
 );
 
 insert into ctadisp
@@ -61,9 +70,45 @@ select
 from cache
 where arquivo like 'cta_disp';
 
+update ctadisp
+set entidade = case orgao
+                   when 1 then 'cm'
+                   when 12 then 'fpsm'
+                   when 50 then 'fpsm'
+                   else 'pm'
+    end
+where exercicio = {{exercicio}}
+  and entidade is null or entidade like '';
+
 CREATE TABLE ctadisp_temp AS
 SELECT DISTINCT * FROM ctadisp;
 
 DROP TABLE ctadisp;
 
 ALTER TABLE ctadisp_temp RENAME TO ctadisp;
+
+update ctadisp t
+set
+    especificacao = (select especificacao from pcasp where exercicio = t.exercicio and conta_contabil like t.conta_contabil limit 1),
+    nome_orgao = (select nome from orgao where exercicio = t.exercicio and orgao = t.orgao limit 1),
+    nome_uniorcam = (select nome from uniorcam where exercicio = t.exercicio and uniorcam = t.uniorcam limit 1),
+    nome_exercicio_recurso = (select nome from exercicio_recurso where exercicio = t.exercicio and exercicio_recurso = t.exercicio_recurso limit 1),
+    nome_fonte_recurso = (select nome from fonte_recurso where exercicio = t.exercicio and fonte_recurso = t.fonte_recurso limit 1),
+    nome_codigo_orcamentario = (select nome from codigo_orcamentario where exercicio = t.exercicio and codigo_orcamentario = t.codigo_orcamentario limit 1),
+    nome_emenda_parlamentar = (select nome from emenda_parlamentar where exercicio = t.exercicio and emenda_parlamentar = t.emenda_parlamentar limit 1),
+    nome_tipo_conta = case tipo_conta
+    when 1 then 'Caixa'
+    when 2 then 'Banco conta-movimento'
+    when 3 then 'Banco conta-aplicação'
+    when 4 then 'Depósito de sentenças judiciais'
+    when 5 then 'Depósitos judiciais de restos a pagar'
+    else null
+end,
+    nome_classificacao = case classificacao
+                            when 1 then 'Executivo'
+                            when 2 then 'Legislativo'
+                            when 3 then 'RPPS'
+                            when 9 then 'Outros'
+                            else null
+end
+where nome_orgao is null or nome_orgao like '';

@@ -4,12 +4,23 @@ baldesp
     remessa uinteger,
     entidade varchar(4),
     orgao usmallint,
+    nome_orgao varchar(80),
     uniorcam usmallint,
+    nome_uniorcam varchar(80),
     funcao usmallint,
+    nome_funcao varchar(80),
     subfuncao usmallint,
+    nome_subfuncao varchar(80),
     programa usmallint,
+    nome_programa varchar(80),
     projativ usmallint,
+    nome_projativ varchar(80),
     elemento varchar(9),
+    nome_elemento varchar(110),
+    exercicio_recurso utinyint,
+    nome_exercicio_recurso varchar(30),
+    fonte_recurso usmallint,
+    nome_fonte_recurso varchar(80),
     dotacao_inicial hugeint,
     atualizacao_monetaria hugeint,
     credito_suplementar hugeint,
@@ -19,15 +30,13 @@ baldesp
     valor_empenhado hugeint,
     valor_liquidado hugeint,
     valor_pago hugeint,
-    valor_limitado hugeint,
-    valor_recomposto hugeint,
     transferencia hugeint,
     transposicao hugeint,
     remanejamento hugeint,
-    exercicio_recurso utinyint,
-    fonte_recurso usmallint,
     dotacao_atualizada hugeint,
     saldo_dotacao hugeint,
+    valor_limitado hugeint,
+    valor_recomposto hugeint,
     saldo_disponivel hugeint,
     empenhado_a_liquidar hugeint,
     empenhado_a_pagar hugeint,
@@ -130,3 +139,16 @@ set
     liquidado_a_pagar = valor_liquidado - valor_pago
 where remessa = {{remessa}}
   and saldo_disponivel is null;
+
+update baldesp t
+set
+    nome_orgao = (select nome from orgao where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and orgao = t.orgao limit 1),
+    nome_uniorcam = (select nome from uniorcam where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and uniorcam = t.uniorcam limit 1),
+    nome_elemento = (select especificacao from rubrica where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and rubrica like t.elemento || '.00.00.00.00' limit 1),
+    nome_funcao = (select nome from funcao where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and funcao = t.funcao limit 1),
+    nome_subfuncao = (select nome from subfuncao where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and subfuncao = t.subfuncao limit 1),
+    nome_programa = (select nome from programa where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and programa = t.programa limit 1),
+    nome_projativ = (select nome from projativ where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and projativ = t.projativ limit 1),
+    nome_exercicio_recurso = (select nome from exercicio_recurso where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and exercicio_recurso = t.exercicio_recurso limit 1),
+    nome_fonte_recurso = (select nome from fonte_recurso where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and fonte_recurso = t.fonte_recurso limit 1)
+where nome_orgao is null or nome_orgao like '';
