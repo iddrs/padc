@@ -60,6 +60,42 @@ class Processor
             Output::println("Carregando {$source}");
             $arquivo = basename(strtolower($source), '.txt');
             $fh = fopen($source, 'r');
+            $first_line = fgets($fh);
+            $header = $this->parseSourceHeader($first_line);
+//            $encoding = mb_detect_encoding(file_get_contents($source), ['UTF-8', 'ISO-8859-1', 'Windows-1252']);
+//            var_dump($encoding);
+            $encoding = 'iso_8859_1';
+            $sql = <<<SQL
+            insert into cache (raw_data)
+            select raw from read_csv('$source', delim = '', header = false, skip = 1, columns = {'raw': VARCHAR}, encoding = '$encoding');
+            SQL;
+            $this->db->query($sql);
+            $this->db->query("update cache set arquivo = '$arquivo', remessa = {$header['remessa']}, entidade = '{$header['entidade']}' where arquivo is null;");
+            $this->db->query("delete from cache where starts_with(raw_data, 'FINALIZADOR') or starts_with(raw_data, 'finalizador');");
+
+
+//            while (!feof($fh)) {
+//                $raw_data = trim(fgets($fh));
+//                $encoding = mb_detect_encoding($raw_data, ['UTF-8', 'ISO-8859-1', 'Windows-1252']);
+//                $raw_data = mb_convert_encoding($raw_data, 'UTF-8', $encoding);
+//                if(str_starts_with(strtolower($raw_data), 'finalizador')){
+//                    break;
+//                }
+//                $sql = <<<SQL
+//                insert into cache (arquivo, remessa, entidade, raw_data)
+//                values ('$arquivo', {$header['remessa']}, '{$header['entidade']}', '$raw_data');
+//                SQL;
+//                $this->db->query($sql);
+//            }
+        }
+    }
+
+    /*private function readRawData(): void
+    {
+        foreach ($this->sources as $source) {
+            Output::println("Carregando {$source}");
+            $arquivo = basename(strtolower($source), '.txt');
+            $fh = fopen($source, 'r');
             $header = $this->parseSourceHeader(fgets($fh));
             while (!feof($fh)) {
                 $raw_data = trim(fgets($fh));
@@ -75,7 +111,7 @@ class Processor
                 $this->db->query($sql);
             }
         }
-    }
+    }*/
 
     private function parseSourceHeader(string $raw): array
     {
