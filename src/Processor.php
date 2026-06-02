@@ -61,16 +61,23 @@ class Processor
             $arquivo = basename(strtolower($source), '.txt');
             $fh = fopen($source, 'r');
             $first_line = fgets($fh);
+            fclose($fh);
             $header = $this->parseSourceHeader($first_line);
 //            $encoding = mb_detect_encoding(file_get_contents($source), ['UTF-8', 'ISO-8859-1', 'Windows-1252']);
 //            var_dump($encoding);
             $encoding = 'iso_8859_1';
-            $sql = <<<SQL
+            /*$sql = <<<SQL
             insert into cache (raw_data)
             select raw from read_csv('$source', delim = '', header = false, skip = 1, columns = {'raw': VARCHAR}, encoding = '$encoding');
             SQL;
             $this->db->query($sql);
             $this->db->query("update cache set arquivo = '$arquivo', remessa = {$header['remessa']}, entidade = '{$header['entidade']}' where arquivo is null;");
+            $this->db->query("delete from cache where starts_with(raw_data, 'FINALIZADOR') or starts_with(raw_data, 'finalizador');");*/
+            $sql = <<<SQL
+            insert into cache (arquivo, remessa, entidade, raw_data)
+            select '$arquivo' as arquivo, {$header['remessa']} as remessa, '{$header['entidade']}' as entidade, raw from read_csv('$source', delim = '', header = false, skip = 1, columns = {'raw': VARCHAR}, encoding = '$encoding');
+            SQL;
+            $this->db->query($sql);
             $this->db->query("delete from cache where starts_with(raw_data, 'FINALIZADOR') or starts_with(raw_data, 'finalizador');");
 
 
