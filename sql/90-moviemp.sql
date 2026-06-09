@@ -53,7 +53,10 @@ moviemp
     liquidado decimal(11, 2),
     pago_bruto decimal(11, 2),
     estorno_pagamento decimal(11, 2),
-    pago decimal(11, 2)
+    pago decimal(11, 2),
+    empenhado_a_liquidar decimal(11, 2),
+    empenhado_a_pagar decimal(11, 2),
+    liquidado_a_pagar decimal(11, 2)
 );
 
 delete from moviemp where remessa = {{remessa}};
@@ -150,6 +153,13 @@ set
     pago_bruto = (select sum(valor) from pagamento where remessa = m.remessa and chave_empenho = m.chave_empenho and valor > 0),
     estorno_pagamento = (select sum(valor) from pagamento where remessa = m.remessa and chave_empenho = m.chave_empenho and valor < 0),
     pago = (select sum(valor) from pagamento where remessa = m.remessa and chave_empenho = m.chave_empenho)
+where remessa = {{remessa}};
+
+update moviemp
+set
+    empenhado_a_liquidar = empenhado - liquidado,
+    empenhado_a_pagar = empenhado - pago,
+    liquidado_a_pagar = liquidado - pago
 where remessa = {{remessa}};
 
 update moviemp t

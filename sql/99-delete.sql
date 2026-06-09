@@ -1,0 +1,11 @@
+drop table cache;
+drop table base_legal;
+drop table caracteristica_peculiar;
+drop table codigo_orcamentario;
+drop table deducao;
+drop table despesa_funcionario;
+drop table emenda_parlamentar;
+drop table exercicio_recurso;
+drop table forma_contratacao;
+drop table funcao;
+drop table subfuncao;
