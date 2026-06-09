@@ -32,5 +32,6 @@
     <file url="file://$PROJECT_DIR$/sql/52-rd_extra.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/sql/70-cta_disp.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/sql/90-moviemp.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/99-cache.sql" dialect="GenericSQL" />
   </component>
 </project>

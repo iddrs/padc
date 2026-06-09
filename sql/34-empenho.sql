@@ -104,7 +104,7 @@ select
     substring(raw_data, 45, 13),
     substring(raw_data, 45, 5),
     substring(raw_data, 50,2),
-    substring(raw_data, 52, 5),
+    substring(raw_data, 52, 6),
     make_date(cast(substring(raw_data, 62, 4) as usmallint), cast(substring(raw_data, 60, 2) as utinyint), cast(substring(raw_data, 58, 2) as utinyint)),
     round(cast(substring(raw_data, 79, 1) || ltrim(substring(raw_data, 66, 13), '0') as hugeint) / 100, 2),
     substring(raw_data, 80, 10),
