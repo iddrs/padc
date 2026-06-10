@@ -112,7 +112,12 @@ set
                    when 12 then 'fpsm'
                    when 50 then 'fpsm'
                    else 'pm'
-    end,
+    end
+where remessa = {{remessa}}
+  and entidade is null or entidade like '';
+
+update baldesp
+set
     dotacao_atualizada = dotacao_inicial
         + atualizacao_monetaria
         + credito_suplementar
@@ -122,14 +127,12 @@ set
         + transferencia
         + transposicao
         + remanejamento
-where remessa = {{remessa}}
-  and entidade is null or entidade like '';
+where remessa = {{remessa}};
 
 update baldesp
 set
     saldo_dotacao = dotacao_atualizada - valor_empenhado
-where remessa = {{remessa}}
-  and saldo_dotacao is null;
+where remessa = {{remessa}};
 
 update baldesp
 set
@@ -137,8 +140,7 @@ set
     empenhado_a_liquidar = valor_empenhado - valor_liquidado,
     empenhado_a_pagar = valor_empenhado - valor_pago,
     liquidado_a_pagar = valor_liquidado - valor_pago
-where remessa = {{remessa}}
-  and saldo_disponivel is null;
+where remessa = {{remessa}};
 
 update baldesp t
 set
@@ -151,4 +153,4 @@ set
     nome_projativ = (select nome from projativ where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and projativ = t.projativ limit 1),
     nome_exercicio_recurso = (select nome from exercicio_recurso where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and exercicio_recurso = t.exercicio_recurso limit 1),
     nome_fonte_recurso = (select nome from fonte_recurso where exercicio = cast(substring(cast(t.remessa as varchar(6)), 1, 4) as usmallint) and fonte_recurso = t.fonte_recurso limit 1)
-where nome_orgao is null or nome_orgao like '';
+where remessa = {{remessa}};
