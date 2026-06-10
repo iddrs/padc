@@ -150,7 +150,8 @@ pcasp
     nivel usmallint,
     escrituracao char,
     natureza_informacao char,
-    indicador_superavit char
+    indicador_superavit char,
+    radical varchar(24)
 );
 
 delete from pcasp where exercicio = {{exercicio}};
@@ -164,7 +165,8 @@ insert into pcasp
     nivel,
     escrituracao,
     natureza_informacao,
-    indicador_superavit
+    indicador_superavit,
+    radical
 )
 select distinct
     cast(substring(cast(remessa as varchar(6)), 1, 4) as usmallint),
@@ -174,7 +176,8 @@ select distinct
     nivel,
     escrituracao,
     natureza_informacao,
-    indicador_superavit
+    indicador_superavit,
+    rtrim(conta_contabil, '0.')
 from balver
 where remessa = {{remessa}}
 order by conta_contabil asc;
