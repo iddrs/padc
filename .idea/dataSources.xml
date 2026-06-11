@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:duckdb:Z:\pmidd.duckdb</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="teste.duckdb" connection-mode="Multiple" uuid="ba8cb561-810a-47ae-8166-234f19b3d780">
+      <driver-ref>duckdb</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.duckdb.DuckDBDriver</jdbc-driver>
+      <jdbc-url>jdbc:duckdb:C:\Users\contabilidade\OneDrive - independencia.rs.gov.br\Desktop\teste.duckdb</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
