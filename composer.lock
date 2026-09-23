@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e69d1035358f996174709395e0d610a3",
+    "content-hash": "bc7aaf4d4655ba720358aea5ea65d3c8",
     "packages": [
         {
             "name": "satur.io/duckdb",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/satur-io/duckdb-php.git",
-                "reference": "d09caa5a0ea630683b707d739fc5d055bd9427e9"
+                "reference": "9e30b059d5b86fc1e8025d448e20bdeeea21a0e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/satur-io/duckdb-php/zipball/d09caa5a0ea630683b707d739fc5d055bd9427e9",
-                "reference": "d09caa5a0ea630683b707d739fc5d055bd9427e9",
+                "url": "https://api.github.com/repos/satur-io/duckdb-php/zipball/9e30b059d5b86fc1e8025d448e20bdeeea21a0e3",
+                "reference": "9e30b059d5b86fc1e8025d448e20bdeeea21a0e3",
                 "shasum": ""
             },
             "require": {
@@ -75,7 +75,7 @@
                     "type": "ko_fi"
                 }
             ],
-            "time": "2026-04-02T22:51:43+00:00"
+            "time": "2026-08-15T10:24:39+00:00"
         },
         {
             "name": "satur.io/duckdb-auto",
@@ -129,8 +129,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.5"
+        "php": ">=8.4"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
