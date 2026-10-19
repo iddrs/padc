@@ -23,5 +23,9 @@
         "allow-plugins": {
             "satur.io/duckdb-auto": true
         }
+    },
+    "scripts": {
+        "post-install-cmd": "\\Saturio\\DuckDB\\CLib\\Installer::install",
+        "post-update-cmd": "\\Saturio\\DuckDB\\CLib\\Installer::install"
     }
 }
